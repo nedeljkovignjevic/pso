@@ -28,7 +28,8 @@ class Particle:
 
 class PSO:
 
-    def __init__(self, cost_function, num_var, num_particles=30, iter_max=100, var_min=-10, var_max=10, w=0.9, c1=2.5, c2=0.5):
+    def __init__(self, cost_function, num_var, num_particles=30, iter_max=100, var_min=-10, var_max=10,
+                 wi=0.9, wf=0.4, cpi=2.5, cpf=0.5, csi=0.5, csf=2.5):
         """
         Implementation of  Particle swarm optimization algorithm (PSO)
 
@@ -39,9 +40,12 @@ class PSO:
             iter_max : (int) Maximum number of iterations
             var_min : (int) Lower bound of decision variables
             var_max : (int) Upper bound of decision variables
-            w : (int) Inertia coefficient
-            c1 : (int) Cognitive acceleration coefficient
-            c2 : (int) Social acceleration coefficient
+            wi : (int) Initial inertia coefficient
+            wf : (int) Final inertia coefficient
+            cpi : (int) Initial personal (cognitive) acceleration coefficient
+            cpf : (int) Final personal (cognitive) acceleration coefficient
+            csi : (int) Initial social acceleration coefficient
+            csf : (int) Final social acceleration coefficient
         """
 
         self.cost_function = cost_function
@@ -51,9 +55,12 @@ class PSO:
         self.iter_max = iter_max
         self.var_min = var_min
         self.var_max = var_max
-        self.w = w
-        self.c1 = c1
-        self.c2 = c2
+        self.wi = wi
+        self.wf = wf
+        self.cpi = cpi
+        self.cpf = cpf
+        self.csi = csi
+        self.csf = csf
 
         self.global_best_cost = inf
         self.global_best_position = None
@@ -67,6 +74,12 @@ class PSO:
         return x_min + ((x_max - x_min) / (self.iter_max - 0)) * (self.iter_max - iteration)
 
     def optimize(self):
+        """
+        Minimize cost function (evaluation of artificial neural network performance)
+
+        Return:
+             global_best_position : (list)
+        """
 
         # Initialize population
         # -----------------------------------------------------------------------------------------------
@@ -87,26 +100,24 @@ class PSO:
                 self.global_best_position = particle_array[i].best_position
         # -----------------------------------------------------------------------------------------------
 
-        best_costs = np.zeros((self.iter_max, 1))
-
         # The main loop
         for iteration in range(self.iter_max):
 
             # Calculate inertia factor
-            self.w = self.linrate(0.4, 0.9, iteration)
+            w = self.linrate(self.wf, self.wi, iteration)
             # Calculate personal acceleration coefficient
-            self.c1 = self.linrate(2.5, 0.5, iteration)
+            cp = self.linrate(self.cpi, self.cpf, iteration)
             # Calculate social acceleration coefficient
-            self.c2 = self.linrate(0.5, 2.5, iteration)
+            cs = self.linrate(self.csi, self.csf, iteration)
 
             for i in range(self.num_particles):
 
                 # Update velocity
-                particle_array[i].velocity = np.multiply(self.w, particle_array[i].velocity) + \
-                                             np.multiply(self.c1 * np.random.rand(self.num_var),
+                particle_array[i].velocity = np.multiply(w, particle_array[i].velocity) + \
+                                             np.multiply(cp * np.random.random(self.num_var),
                                                          np.subtract(particle_array[i].best_position,
                                                                      particle_array[i].position)) + \
-                                             np.multiply(self.c2 * np.random.random(self.num_var),
+                                             np.multiply(cs * np.random.random(self.num_var),
                                                          np.subtract(self.global_best_position,
                                                                      particle_array[i].position))
 
@@ -128,5 +139,6 @@ class PSO:
                         self.global_best_position = particle_array[i].best_position
 
             # Display info about current iteration
-            best_costs[iteration] = self.global_best_cost
-            print(f'Iteration {iteration+1}: Best cost = {str(best_costs[iteration])}')
+            print(f'Iteration {iteration + 1}: Best cost = {self.global_best_cost}')
+
+        return self.global_best_position

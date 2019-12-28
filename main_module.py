@@ -4,11 +4,13 @@ from src.pso import PSO
 
 if __name__ == '__main__':
 
-    # Example of evaluating ann
+    # Evaluate ANN performance for the given set of random weights
     w = np.random.uniform(-10, 10, 60)
     result = optimality_criterion(w)
-    print(result)
+    print(f'Random weights: {w}\nEvaluation of ANN performance: {result}\n')
 
-    # Training ann (minimizing cost function)
+    # Train ANN (minimize loss function)
     p = PSO(optimality_criterion, 60)
-    p.optimize()
+    w = p.optimize()
+    result = optimality_criterion(w)
+    print(f'\nOptimized weights: {w}\nEvaluation of ANN performance: {result}')
