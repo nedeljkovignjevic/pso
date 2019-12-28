@@ -1,2 +1,2 @@
-# pso
-Using PSO algorithm for training artificial neural networks
+# Particle swarm optimization (PSO)
+Using PSO for training artificial neural networks
