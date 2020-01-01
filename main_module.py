@@ -1,16 +1,15 @@
 from src.ann_criterion import optimality_criterion, np
 from src.pso import PSO
+from src.gui import *
 
 
-if __name__ == '__main__':
 
-    # Evaluate ANN performance for the given set of random weights
-    w = np.random.uniform(-10, 10, 60)
-    result = optimality_criterion(w)
-    print(f'Random weights: {w}\nEvaluation of ANN performance: {result}\n')
+if __name__ == "__main__":
+    import sys
 
-    # Train ANN (minimize loss function)
-    p = PSO(optimality_criterion, 60)
-    w = p.optimize()
-    result = optimality_criterion(w)
-    print(f'\nOptimized weights: {w}\nEvaluation of ANN performance: {result}')
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())

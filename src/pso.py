@@ -1,6 +1,6 @@
 import numpy as np
 from math import inf
-
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Particle:
 
@@ -73,14 +73,13 @@ class PSO:
 
         return x_min + ((x_max - x_min) / (self.iter_max - 0)) * (self.iter_max - iteration)
 
-    def optimize(self):
+    def optimize(self, mainWindow):
         """
         Minimize cost function (evaluation of artificial neural network performance)
 
         Return:
              global_best_position : (list)
         """
-
         # Initialize population
         # -----------------------------------------------------------------------------------------------
         particle_array = [Particle() for i in range(self.num_particles)]
@@ -103,6 +102,11 @@ class PSO:
         # The main loop
         for iteration in range(self.iter_max):
 
+            mainWindow.label_12.setText("Current Iteration: " + str(iteration + 1))
+            mainWindow.label_11.setText("Cost Function Value: " + str(self.global_best_cost))
+            mainWindow.label_14.setText(str(self.global_best_position))
+            mainWindow.progressBar.setValue(((iteration + 1) / self.iter_max) * 100)
+            QtGui.QGuiApplication.processEvents()
             # Calculate inertia factor
             w = self.linrate(self.wf, self.wi, iteration)
             # Calculate personal acceleration coefficient
@@ -139,6 +143,7 @@ class PSO:
                         self.global_best_position = particle_array[i].best_position
 
             # Display info about current iteration
-            print(f'Iteration {iteration + 1}: Best cost = {self.global_best_cost}')
+            mainWindow.consoleText += f'Iteration {iteration + 1}: Best cost = {self.global_best_cost}\n'
+            mainWindow.textBrowser.setText(mainWindow.consoleText)
 
         return self.global_best_position
