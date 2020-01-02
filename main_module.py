@@ -1,15 +1,13 @@
-from src.ann_criterion import optimality_criterion, np
-from src.pso import PSO
-from src.gui import *
+from src.gui import MyWindow, QtWidgets
 
+import sys
 
 
 if __name__ == "__main__":
-    import sys
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
+    ui = MyWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
