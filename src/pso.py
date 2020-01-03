@@ -102,6 +102,8 @@ class PSO:
         # The main loop
         for iteration in range(self.iter_max):
 
+            if (mainWindow.stopped):
+                return self.global_best_position
             mainWindow.label_12.setText("Current Iteration: " + str(iteration + 1))
             mainWindow.label_11.setText("Cost Function Value: " + str(self.global_best_cost))
             mainWindow.label_14.setText(str(self.global_best_position))

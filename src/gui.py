@@ -18,8 +18,9 @@ class Ui_MainWindow(object):
         MainWindow.setMinimumSize(QtCore.QSize(936, 867))
         MainWindow.setMaximumSize(QtCore.QSize(936, 867))
         MainWindow.setStyleSheet("background-color: rgb(43, 43, 43);\n"
-"font: 8pt \"Segoe UI\";\n"
-"color: rgb(187, 187, 187);")
+                                 "font: 8pt \"Segoe UI\";\n"
+                                 "color: rgb(187, 187, 187);")
+        self.stopped = False
         self.consoleText = ""
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -151,7 +152,7 @@ class Ui_MainWindow(object):
         self.label_14.setObjectName("label_14")
         self.verticalLayout.addWidget(self.label_14)
         self.label_11 = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label_11.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.label_11.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.label_11.setObjectName("label_11")
         self.verticalLayout.addWidget(self.label_11)
         self.progressBar = QtWidgets.QProgressBar(self.verticalLayoutWidget)
@@ -255,7 +256,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "                                                                                                         PSO"))
+        MainWindow.setWindowTitle(_translate("MainWindow",
+                                             "                                                                                                         PSO"))
         self.label.setText(_translate("MainWindow", "Number of Iterations:"))
         self.label_2.setText(_translate("MainWindow", "Number of Particles:"))
         self.label_4.setText(_translate("MainWindow", "Initial Inertia Coefficient:"))
@@ -275,9 +277,10 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Train"))
         self.pushButton_2.setText(_translate("MainWindow", "Stop"))
         self.pushButton.clicked.connect(self.train)
-        self.pushButton_2.clicked.connect(self.exit)
+        self.pushButton_2.clicked.connect(self.stop)
 
     def train(self):
+        self.stopped = False
         num_particles = self.spinBox_2.value()
         iter_max = self.spinBox.value()
         var_min = self.doubleSpinBox_7.value()
@@ -294,5 +297,5 @@ class Ui_MainWindow(object):
         self.consoleText += f'\nOptimized weights: {w}\nEvaluation of ANN performance: {result}\n\n'
         self.textBrowser.setText(self.consoleText)
 
-    def exit(self):
-        exit(0)
+    def stop(self):
+        self.stopped = True
