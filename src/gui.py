@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-
-
-from PyQt5 import QtCore, QtGui, QtWidgets
-from src.ann_criterion import optimality_criterion, np
+from src.ann_criterion import optimality_criterion
 from src.pso import PSO
 
+from PyQt5 import QtCore, QtWidgets
 
-class Ui_MainWindow(object):
+
+class MyWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(936, 867)
@@ -20,7 +18,6 @@ class Ui_MainWindow(object):
         MainWindow.setStyleSheet("background-color: rgb(43, 43, 43);\n"
                                  "font: 8pt \"Segoe UI\";\n"
                                  "color: rgb(187, 187, 187);")
-        self.stopped = False
         self.consoleText = ""
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -257,7 +254,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow",
-                                             "                                                                                                         PSO"))
+                                             "PSO".center(300)))
         self.label.setText(_translate("MainWindow", "Number of Iterations:"))
         self.label_2.setText(_translate("MainWindow", "Number of Particles:"))
         self.label_4.setText(_translate("MainWindow", "Initial Inertia Coefficient:"))
@@ -276,11 +273,11 @@ class Ui_MainWindow(object):
         self.label_17.setText(_translate("MainWindow", "Training Options"))
         self.pushButton.setText(_translate("MainWindow", "Train"))
         self.pushButton_2.setText(_translate("MainWindow", "Stop"))
+
         self.pushButton.clicked.connect(self.train)
-        self.pushButton_2.clicked.connect(self.stop)
+        self.pushButton_2.clicked.connect(self.exit)
 
     def train(self):
-        self.stopped = False
         num_particles = self.spinBox_2.value()
         iter_max = self.spinBox.value()
         var_min = self.doubleSpinBox_7.value()
@@ -291,11 +288,9 @@ class Ui_MainWindow(object):
         cpf = self.doubleSpinBox_4.value()
         csi = self.doubleSpinBox_6.value()
         csf = self.doubleSpinBox_5.value()
-        p = PSO(optimality_criterion, 60, num_particles, iter_max, var_min, var_max, wi, wf, cpi, cpf, csi, csf)
-        w = p.optimize(self)
-        result = optimality_criterion(w)
-        self.consoleText += f'\nOptimized weights: {w}\nEvaluation of ANN performance: {result}\n\n'
-        self.textBrowser.setText(self.consoleText)
 
-    def stop(self):
-        self.stopped = True
+        p = PSO(optimality_criterion, 60, num_particles, iter_max, var_min, var_max, wi, wf, cpi, cpf, csi, csf)
+        p.optimize(self)
+
+    def exit(self):
+        exit(0)
