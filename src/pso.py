@@ -126,6 +126,9 @@ class PSO:
 
             for i in range(self.num_particles):
 
+                if (MyWindow.stopped):
+                    return self.global_best_position
+
                 # Update velocity
                 particle_array[i].velocity = np.multiply(w, particle_array[i].velocity) + \
                                              np.multiply(cp * np.random.random(self.num_var),

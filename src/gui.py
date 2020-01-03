@@ -18,6 +18,7 @@ class MyWindow(object):
         MainWindow.setStyleSheet("background-color: rgb(43, 43, 43);\n"
                                  "font: 8pt \"Segoe UI\";\n"
                                  "color: rgb(187, 187, 187);")
+        self.stopped = False
         self.consoleText = ""
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -254,7 +255,7 @@ class MyWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow",
-                                             "PSO".center(300)))
+                                             "PSO".center(210)))
         self.label.setText(_translate("MainWindow", "Number of Iterations:"))
         self.label_2.setText(_translate("MainWindow", "Number of Particles:"))
         self.label_4.setText(_translate("MainWindow", "Initial Inertia Coefficient:"))
@@ -275,9 +276,10 @@ class MyWindow(object):
         self.pushButton_2.setText(_translate("MainWindow", "Stop"))
 
         self.pushButton.clicked.connect(self.train)
-        self.pushButton_2.clicked.connect(self.exit)
+        self.pushButton_2.clicked.connect(self.stop)
 
     def train(self):
+        self.stopped = False
         num_particles = self.spinBox_2.value()
         iter_max = self.spinBox.value()
         var_min = self.doubleSpinBox_7.value()
@@ -292,5 +294,8 @@ class MyWindow(object):
         p = PSO(optimality_criterion, 60, num_particles, iter_max, var_min, var_max, wi, wf, cpi, cpf, csi, csf)
         p.optimize(self)
 
-    def exit(self):
-        exit(0)
+    def stop(self):
+        if (not self.stopped):
+            self.consoleText += "\n******************* ITERATING STOPPED *******************\n\n"
+            self.textBrowser.setText(self.consoleText)
+        self.stopped = True
