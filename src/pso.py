@@ -75,26 +75,24 @@ class PSO:
 
         return x_min + ((x_max - x_min) / (self.iter_max - 0)) * (self.iter_max - iteration)
 
-    def display_info(self, MyWindow, iteration):
+    def display_info(self, my_window, iteration):
         """
         Display info about current iteration
         """
 
-        MyWindow.label_12.setText("Current Iteration: " + str(iteration + 1))
-        MyWindow.label_11.setText("Cost Function Value: " + str(self.global_best_cost))
-        MyWindow.label_14.setText(str(self.global_best_position))
-        MyWindow.progressBar.setValue(((iteration + 1) / self.iter_max) * 100)
-        MyWindow.consoleText += f'Iteration {iteration + 1}: Cost Function Value = {self.global_best_cost}\n'
-        MyWindow.textBrowser.setText(MyWindow.consoleText)
+        my_window.label_12.setText("Current Iteration: " + str(iteration + 1))
+        my_window.label_11.setText("Cost Function Value: " + str(self.global_best_cost))
+        my_window.label_14.setText(str(self.global_best_position))
+        my_window.progressBar.setValue(((iteration + 1) / self.iter_max) * 100)
+        my_window.consoleText += f'Iteration {iteration + 1}: Cost Function Value = {self.global_best_cost}\n'
+        my_window.textBrowser.setText(my_window.consoleText)
         QtGui.QGuiApplication.processEvents()
 
-    def optimize(self, MyWindow):
+    def optimize(self, my_window):
         """
         Minimize cost function (evaluation of artificial neural network performance)
-
-        Return:
-             global_best_position : (list)
         """
+
         # Initialize population
         # -----------------------------------------------------------------------------------------------
         particle_array = [Particle() for i in range(self.num_particles)]
@@ -117,6 +115,9 @@ class PSO:
         # The main loop
         for iteration in range(self.iter_max):
 
+            if my_window.stopped:
+                return
+
             # Calculate inertia factor
             w = self.linrate(self.wf, self.wi, iteration)
             # Calculate personal acceleration coefficient
@@ -125,9 +126,6 @@ class PSO:
             cs = self.linrate(self.csi, self.csf, iteration)
 
             for i in range(self.num_particles):
-
-                if (MyWindow.stopped):
-                    return self.global_best_position
 
                 # Update velocity
                 particle_array[i].velocity = np.multiply(w, particle_array[i].velocity) + \
@@ -156,6 +154,4 @@ class PSO:
                         self.global_best_position = particle_array[i].best_position
 
             # Display info about current iteration
-            self.display_info(MyWindow, iteration)
-
-        return self.global_best_position
+            self.display_info(my_window, iteration)
